@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo interactiva · TuControl</title>
+  <meta name="description" content="Prueba TuControl con datos de ejemplo: abre caja, vende, revisa el inventario y cierra con cuadre. Sin registrarte.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script type="module" src="/src/demo/main.js"></script>
+</head>
+<body class="bg-slate-50">
+<div x-data="demo" x-cloak class="min-h-screen pb-24 lg:pb-0">
+
+  <!-- Aviso de demo -->
+  <div class="bg-brand-900 px-4 py-2 text-center text-xs text-brand-100 sm:text-sm">
+    Estás en una <strong class="text-white">demo con datos de ejemplo</strong>. Lo que hagas se guarda solo en este navegador. <a href="/" class="font-semibold text-white underline">Volver al sitio</a>
+  </div>
+
+  <!-- Barra superior -->
+  <header class="sticky top-0 z-30 border-b border-slate-200 bg-white">
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 lg:px-6">
+      <a href="/" class="flex items-center gap-2" title="Volver al sitio">
+        <img src="/logo.svg" alt="" class="h-9 w-9">
+        <span class="text-lg leading-none"><span class="font-light text-slate-500">Tu</span><span class="font-bold text-brand-900">Control</span></span>
+      </a>
+      <span class="hidden text-sm text-slate-500 sm:inline" x-text="s.empresa"></span>
+
+      <div class="ml-auto flex flex-wrap items-center gap-2">
+        <label class="sr-only" for="sede">Sede</label>
+        <select id="sede" class="campo !w-auto !py-2" x-model.number="sedeId" @change="error = ''">
+          <template x-for="sede in s.sedes" :key="sede.id">
+            <option :value="sede.id" x-text="'Sede ' + sede.nombre"></option>
+          </template>
+        </select>
+
+        <div class="inline-flex rounded-lg border border-slate-300 bg-slate-100 p-0.5 text-sm font-semibold" role="group" aria-label="Rol">
+          <button type="button" class="cursor-pointer rounded-md px-3 py-1.5" :class="esAdmin ? 'bg-white text-brand-900 shadow-sm' : 'text-slate-500'" @click="cambiarRol('admin')">Admin</button>
+          <button type="button" class="cursor-pointer rounded-md px-3 py-1.5" :class="!esAdmin ? 'bg-white text-brand-900 shadow-sm' : 'text-slate-500'" @click="cambiarRol('cajero')">Cajero</button>
+        </div>
+
+        <button type="button" class="btn btn-claro !py-2" @click="reiniciar()">Reiniciar</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="lg:flex">
+    <!-- Menú lateral (escritorio) -->
+    <nav class="hidden w-56 shrink-0 border-r border-slate-200 bg-white lg:block lg:min-h-[calc(100vh-7rem)]" aria-label="Secciones">
+      <ul class="space-y-1 p-3">
+        <template x-for="v in vistas" :key="v.id">
+          <li>
+            <button type="button" @click="ir(v.id)"
+                    class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium"
+                    :class="vista === v.id ? 'bg-brand-900 text-white' : 'text-slate-600 hover:bg-slate-100'">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path :d="v.icono"/></svg>
+              <span x-text="v.nombre"></span>
+            </button>
+          </li>
+        </template>
+      </ul>
+    </nav>
+
+    <main class="min-w-0 flex-1 p-4 lg:p-6">
+
+      <!-- Recorrido sugerido -->
+      <section class="tarjeta mb-5 border-acento-500/30 bg-sky-50/60" aria-label="Recorrido sugerido">
+        <button type="button" class="flex w-full cursor-pointer items-center justify-between gap-3 text-left" @click="recorridoAbierto = !recorridoAbierto">
+          <span class="font-semibold text-brand-900">Recorrido sugerido <span class="font-normal text-slate-500" x-text="'· ' + pasosHechos + ' de ' + pasos.length"></span></span>
+          <span class="text-sm text-acento-600" x-text="recorridoAbierto ? 'Ocultar' : 'Mostrar'"></span>
+        </button>
+        <ol class="mt-3 grid gap-2 text-sm sm:grid-cols-2 xl:grid-cols-3" x-show="recorridoAbierto">
+          <template x-for="(p, i) in pasos" :key="i">
+            <li class="flex items-center gap-2">
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+                    :class="p.hecho ? 'bg-emerald-600 text-white' : 'bg-white text-slate-500 ring-1 ring-slate-300'"
+                    x-text="p.hecho ? '✓' : i + 1"></span>
+              <button type="button" class="text-left" :class="[p.hecho ? 'text-slate-400 line-through' : 'text-slate-700', p.vista && vistas.some(v => v.id === p.vista) ? 'cursor-pointer hover:underline' : '']"
+                      @click="p.vista && vistas.some(v => v.id === p.vista) && ir(p.vista)" x-text="p.texto"></button>
+            </li>
+          </template>
+        </ol>
+      </section>
+
+      <!-- Mensaje de error -->
+      <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert" x-show="error" x-text="error"></div>
+
+      <!-- ══ PANEL ══ -->
+      <section x-show="vista === 'panel'">
+        <h1 class="text-2xl font-bold">Panel</h1>
+        <p class="mt-1 text-sm text-slate-500">Resumen de toda la empresa, en vivo.</p>
+
+        <div class="mt-5 grid grid-cols-2 gap-3 xl:grid-cols-5">
+          <div class="tarjeta">
+            <p class="text-xs font-medium text-slate-500">Ventas de hoy</p>
+            <p class="mt-1 text-xl font-bold text-brand-900 sm:text-2xl" x-text="dinero(ventasHoy)"></p>
+            <p class="mt-1 text-xs text-slate-500" x-text="deHoy.length + ' tickets'"></p>
+          </div>
+          <div class="tarjeta">
+            <p class="text-xs font-medium text-slate-500">Utilidad de hoy</p>
+            <p class="mt-1 text-xl font-bold text-emerald-700 sm:text-2xl" x-text="dinero(utilidadHoy)"></p>
+            <p class="mt-1 text-xs text-slate-500">Ventas menos costo</p>
+          </div>
+          <div class="tarjeta">
+            <p class="text-xs font-medium text-slate-500">Efectivo esperado</p>
+            <p class="mt-1 text-xl font-bold text-brand-900 sm:text-2xl" x-text="dinero(efectivoEsperado)"></p>
+            <p class="mt-1 text-xs text-slate-500" x-text="cajasAbiertas.length + (cajasAbiertas.length === 1 ? ' caja abierta' : ' cajas abiertas')"></p>
+          </div>
+          <button type="button" class="tarjeta cursor-pointer text-left hover:border-amber-300" @click="soloBajo = true; ir('inventario')">
+            <p class="text-xs font-medium text-slate-500">Stock bajo</p>
+            <p class="mt-1 text-xl font-bold sm:text-2xl" :class="stockBajoTotal ? 'text-amber-700' : 'text-brand-900'" x-text="stockBajoTotal"></p>
+            <p class="mt-1 text-xs text-slate-500">Productos por reponer</p>
+          </button>
+          <div class="tarjeta col-span-2 xl:col-span-1">
+            <p class="text-xs font-medium text-slate-500">Sedes</p>
+            <p class="mt-1 text-xl font-bold text-brand-900 sm:text-2xl" x-text="s.sedes.length"></p>
+            <p class="mt-1 text-xs text-slate-500" x-text="s.sedes.map(x => x.nombre).join(' · ')"></p>
+          </div>
+        </div>
+
+        <div class="mt-4 grid gap-4 xl:grid-cols-3">
+          <div class="tarjeta xl:col-span-2">
+            <h2 class="font-semibold">Ventas de los últimos 14 días</h2>
+            <div class="mt-3 h-64"><canvas id="g-dias"></canvas></div>
+          </div>
+          <div class="tarjeta">
+            <h2 class="font-semibold">Ingresos por método de pago</h2>
+            <div class="mt-3 h-64"><canvas id="g-metodos"></canvas></div>
+          </div>
+          <div class="tarjeta xl:col-span-3">
+            <h2 class="font-semibold">Productos más vendidos <span class="text-sm font-normal text-slate-500">(unidades)</span></h2>
+            <div class="mt-3 h-56"><canvas id="g-top"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ CAJA ══ -->
+      <section x-show="vista === 'caja'">
+        <h1 class="text-2xl font-bold">Caja <span class="text-base font-normal text-slate-500" x-text="'· Sede ' + nombreSede(sedeId)"></span></h1>
+
+        <div class="mt-5 grid gap-4 lg:grid-cols-2">
+          <!-- Sin caja abierta -->
+          <form class="tarjeta" x-show="!cajaAbierta" @submit.prevent="abrirCaja()">
+            <span class="chip chip-neutro">Caja cerrada</span>
+            <h2 class="mt-3 text-lg font-semibold">Abrir caja</h2>
+            <p class="mt-1 text-sm text-slate-500">Sin caja abierta no se puede vender en esta sede.</p>
+            <label class="etiqueta mt-4" for="apertura">Efectivo inicial</label>
+            <input id="apertura" type="number" min="0" step="1000" inputmode="numeric" class="campo" x-model="fCaja.apertura">
+            <button type="submit" class="btn btn-primario mt-4 w-full sm:w-auto">Abrir caja</button>
+          </form>
+
+          <!-- Caja abierta -->
+          <form class="tarjeta" x-show="cajaAbierta" @submit.prevent="cerrarCaja()">
+            <span class="chip chip-ok">Caja abierta</span>
+            <dl class="mt-4 grid grid-cols-2 gap-4 text-sm">
+              <div><dt class="text-slate-500">Efectivo inicial</dt><dd class="text-lg font-semibold text-brand-900" x-text="dinero(cajaAbierta?.apertura)"></dd></div>
+              <div><dt class="text-slate-500">Efectivo esperado</dt><dd class="text-lg font-semibold text-brand-900" x-text="dinero(cajaAbierta?.sistema)"></dd></div>
+            </dl>
+            <p class="mt-2 text-xs text-slate-500">El efectivo esperado sube con cada venta en efectivo. Nequi, tarjeta y transferencias no lo cambian.</p>
+            <label class="etiqueta mt-4" for="cierre">Efectivo contado al cerrar</label>
+            <input id="cierre" type="number" min="0" step="100" inputmode="numeric" class="campo" x-model="fCaja.cierre" :placeholder="'Ej.: ' + (cajaAbierta?.sistema ?? '')">
+            <p class="mt-2 text-sm" x-show="fCaja.cierre !== ''">
+              Diferencia:
+              <strong :class="Number(fCaja.cierre) - (cajaAbierta?.sistema ?? 0) === 0 ? 'text-emerald-700' : 'text-red-700'"
+                      x-text="dinero(Number(fCaja.cierre) - (cajaAbierta?.sistema ?? 0))"></strong>
+            </p>
+            <button type="submit" class="btn btn-primario mt-4 w-full sm:w-auto">Cerrar caja</button>
+          </form>
+
+          <div class="tarjeta">
+            <h2 class="font-semibold">¿Cómo funciona el cuadre?</h2>
+            <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-600">
+              <li>Abres la caja con el efectivo que hay en el cajón.</li>
+              <li>Cada venta en efectivo se suma sola al efectivo esperado.</li>
+              <li>Al cerrar, cuentas el dinero y TuControl te dice si sobra o falta.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="tarjeta mt-4 overflow-x-auto">
+          <h2 class="font-semibold">Últimos cierres</h2>
+          <table class="tabla mt-3">
+            <thead><tr><th>Fecha</th><th>Estado</th><th class="text-right">Inicial</th><th class="text-right">Esperado</th><th class="text-right">Contado</th><th class="text-right">Diferencia</th></tr></thead>
+            <tbody>
+              <template x-for="c in cajasDeSede" :key="c.id">
+                <tr>
+                  <td class="whitespace-nowrap" x-text="fechaCorta(c.fechaApertura) + ' · ' + hora(c.fechaApertura)"></td>
+                  <td><span class="chip" :class="c.estado === 'abierta' ? 'chip-ok' : 'chip-neutro'" x-text="c.estado === 'abierta' ? 'Abierta' : 'Cerrada'"></span></td>
+                  <td class="text-right tabular-nums" x-text="dinero(c.apertura)"></td>
+                  <td class="text-right tabular-nums" x-text="dinero(c.sistema)"></td>
+                  <td class="text-right tabular-nums" x-text="c.cierre === null ? '—' : dinero(c.cierre)"></td>
+                  <td class="text-right font-semibold tabular-nums" :class="c.diferencia === null || c.diferencia === 0 ? 'text-slate-600' : (c.diferencia > 0 ? 'text-emerald-700' : 'text-red-700')"
+                      x-text="c.diferencia === null ? '—' : dinero(c.diferencia)"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ VENTAS ══ -->
+      <section x-show="vista === 'ventas'">
+        <h1 class="text-2xl font-bold">Ventas <span class="text-base font-normal text-slate-500" x-text="'· Sede ' + nombreSede(sedeId)"></span></h1>
+
+        <div class="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900" x-show="!cajaAbierta">
+          No hay caja abierta en esta sede.
+          <button type="button" class="cursor-pointer font-semibold underline" @click="ir('caja')">Abre la caja</button> antes de vender.
+        </div>
+
+        <form class="tarjeta mt-4" @submit.prevent="registrarVenta()">
+          <h2 class="text-lg font-semibold">Nueva venta</h2>
+          <div class="mt-4 space-y-3">
+            <template x-for="(fila, i) in fVenta.filas" :key="i">
+              <div class="grid grid-cols-12 items-end gap-2">
+                <div class="col-span-12 sm:col-span-6">
+                  <label class="etiqueta" :for="'vp' + i">Producto</label>
+                  <select class="campo" :id="'vp' + i" x-model="fila.productoId">
+                    <option value="">— Elige un producto —</option>
+                    <template x-for="p in s.productos" :key="p.id">
+                      <option :value="p.id" :disabled="stock(sedeId, p.id) <= 0"
+                              x-text="p.nombre + ' · ' + dinero(p.precio) + ' (stock ' + stock(sedeId, p.id) + ')'"></option>
+                    </template>
+                  </select>
+                </div>
+                <div class="col-span-4 sm:col-span-2">
+                  <label class="etiqueta" :for="'vc' + i">Cantidad</label>
+                  <input type="number" min="1" step="1" inputmode="numeric" class="campo" :id="'vc' + i" x-model="fila.cantidad">
+                </div>
+                <div class="col-span-5 text-right sm:col-span-3">
+                  <span class="block text-xs text-slate-500">Subtotal</span>
+                  <span class="block py-2.5 font-semibold tabular-nums text-brand-900" x-text="dinero((producto(fila.productoId)?.precio ?? 0) * (Number(fila.cantidad) || 0))"></span>
+                </div>
+                <div class="col-span-3 text-right sm:col-span-1">
+                  <button type="button" class="btn btn-claro !px-3" aria-label="Quitar producto" :disabled="fVenta.filas.length === 1" @click="fVenta.filas.splice(i, 1)">✕</button>
+                </div>
+              </div>
+            </template>
+          </div>
+          <button type="button" class="btn btn-claro mt-3" @click="fVenta.filas.push({ productoId: '', cantidad: 1 })">+ Agregar producto</button>
+
+          <div class="mt-5 grid items-end gap-4 border-t border-slate-200 pt-4 sm:grid-cols-3">
+            <div>
+              <label class="etiqueta" for="metodo">Método de pago</label>
+              <select id="metodo" class="campo" x-model="fVenta.metodo">
+                <template x-for="m in metodos" :key="m.codigo"><option :value="m.codigo" x-text="m.nombre"></option></template>
+              </select>
+            </div>
+            <div class="sm:text-right">
+              <span class="block text-sm text-slate-500">Total</span>
+              <span class="block text-2xl font-bold tabular-nums text-brand-900" x-text="dinero(totalVenta)"></span>
+            </div>
+            <button type="submit" class="btn btn-primario btn-grande" :disabled="!cajaAbierta">Cobrar</button>
+          </div>
+        </form>
+
+        <div class="tarjeta mt-4 overflow-x-auto">
+          <h2 class="font-semibold">Últimas ventas</h2>
+          <table class="tabla mt-3">
+            <thead><tr><th>N.º</th><th>Fecha</th><th>Método</th><th>Estado</th><th class="text-right">Total</th><th x-show="esAdmin"></th></tr></thead>
+            <tbody>
+              <template x-for="v in ventasDeSede" :key="v.id">
+                <tr :class="v.estado === 'anulada' ? 'text-slate-400' : ''">
+                  <td class="whitespace-nowrap font-medium" x-text="v.numero"></td>
+                  <td class="whitespace-nowrap" x-text="fechaCorta(v.fecha) + ' · ' + hora(v.fecha)"></td>
+                  <td x-text="nombreMetodo(v.metodo)"></td>
+                  <td><span class="chip" :class="v.estado === 'completada' ? 'chip-ok' : 'chip-error'" x-text="v.estado === 'completada' ? 'Completada' : 'Anulada'"></span></td>
+                  <td class="text-right font-semibold tabular-nums" :class="v.estado === 'anulada' ? 'line-through' : ''" x-text="dinero(v.total)"></td>
+                  <td class="text-right" x-show="esAdmin">
+                    <button type="button" class="btn btn-peligro !px-3 !py-1.5 text-xs" x-show="puedeAnular(v)" @click="anularVenta(v)">Anular</button>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+          <p class="mt-3 text-xs text-slate-500" x-show="esAdmin">Solo el administrador puede anular, y solo mientras la caja de esa venta siga abierta.</p>
+        </div>
+      </section>
+
+      <!-- ══ INVENTARIO ══ -->
+      <section x-show="vista === 'inventario'">
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <h1 class="text-2xl font-bold">Inventario <span class="text-base font-normal text-slate-500" x-text="'· Sede ' + nombreSede(sedeId)"></span></h1>
+          <label class="flex cursor-pointer items-center gap-2 text-sm">
+            <input type="checkbox" class="h-4 w-4 rounded border-slate-300" x-model="soloBajo"> Solo por reponer
+          </label>
+        </div>
+
+        <div class="tarjeta mt-4 overflow-x-auto">
+          <table class="tabla">
+            <thead><tr><th>Producto</th><th>Categoría</th><th class="text-right">Stock</th><th class="text-right">Mínimo</th><th>Estado</th></tr></thead>
+            <tbody>
+              <template x-for="p in inventarioDeSede" :key="p.id">
+                <tr>
+                  <td class="font-medium text-slate-900" x-text="p.nombre"></td>
+                  <td x-text="p.categoria"></td>
+                  <td class="text-right font-semibold tabular-nums" x-text="stock(sedeId, p.id)"></td>
+                  <td class="text-right tabular-nums text-slate-500" x-text="p.minimo"></td>
+                  <td>
+                    <span class="chip" :class="{ 'chip-ok': estadoStock(p) === 'normal', 'chip-alerta': estadoStock(p) === 'bajo', 'chip-error': estadoStock(p) === 'sin' }"
+                          x-text="{ normal: 'Normal', bajo: 'Stock bajo', sin: 'Sin stock' }[estadoStock(p)]"></span>
+                  </td>
+                </tr>
+              </template>
+              <tr x-show="!inventarioDeSede.length"><td colspan="5" class="py-6 text-center text-slate-500">Todo el inventario de esta sede está por encima del mínimo.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tarjeta mt-4 overflow-x-auto">
+          <h2 class="font-semibold">Movimientos recientes</h2>
+          <p class="mt-1 text-sm text-slate-500">Cada entrada y salida queda registrada con su origen.</p>
+          <table class="tabla mt-3" x-show="movimientosDeSede.length">
+            <thead><tr><th>Hora</th><th>Producto</th><th>Tipo</th><th>Origen</th><th class="text-right">Cantidad</th></tr></thead>
+            <tbody>
+              <template x-for="(m, i) in movimientosDeSede" :key="i">
+                <tr>
+                  <td class="whitespace-nowrap" x-text="hora(m.fecha)"></td>
+                  <td x-text="producto(m.productoId)?.nombre"></td>
+                  <td x-text="m.tipo"></td>
+                  <td x-text="m.nota"></td>
+                  <td class="text-right font-semibold tabular-nums" :class="m.cantidad > 0 ? 'text-emerald-700' : 'text-red-700'" x-text="(m.cantidad > 0 ? '+' : '') + m.cantidad"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+          <p class="mt-3 text-sm text-slate-500" x-show="!movimientosDeSede.length">Aún no hay movimientos en esta sede. Registra una venta o una compra y aparecerán aquí.</p>
+        </div>
+      </section>
+
+      <!-- ══ COMPRAS ══ -->
+      <section x-show="vista === 'compras'">
+        <h1 class="text-2xl font-bold">Compras <span class="text-base font-normal text-slate-500" x-text="'· Sede ' + nombreSede(sedeId)"></span></h1>
+
+        <form class="tarjeta mt-4" @submit.prevent="registrarCompra()">
+          <h2 class="text-lg font-semibold">Nueva compra</h2>
+          <p class="mt-1 text-sm text-slate-500">Al guardar, el stock de la sede sube automáticamente.</p>
+          <div class="mt-4 sm:max-w-sm">
+            <label class="etiqueta" for="proveedor">Proveedor</label>
+            <select id="proveedor" class="campo" x-model="fCompra.proveedorId">
+              <option value="">— Sin proveedor —</option>
+              <template x-for="p in s.proveedores" :key="p.id"><option :value="p.id" x-text="p.nombre"></option></template>
+            </select>
+          </div>
+          <div class="mt-4 space-y-3">
+            <template x-for="(fila, i) in fCompra.filas" :key="i">
+              <div class="grid grid-cols-12 items-end gap-2">
+                <div class="col-span-12 sm:col-span-5">
+                  <label class="etiqueta" :for="'cp' + i">Producto</label>
+                  <select class="campo" :id="'cp' + i" x-model="fila.productoId" @change="alElegirProductoCompra(fila)">
+                    <option value="">— Elige un producto —</option>
+                    <template x-for="p in s.productos" :key="p.id">
+                      <option :value="p.id" x-text="p.nombre + ' (stock ' + stock(sedeId, p.id) + ')'"></option>
+                    </template>
+                  </select>
+                </div>
+                <div class="col-span-4 sm:col-span-2">
+                  <label class="etiqueta" :for="'cc' + i">Cantidad</label>
+                  <input type="number" min="1" step="1" inputmode="numeric" class="campo" :id="'cc' + i" x-model="fila.cantidad">
+                </div>
+                <div class="col-span-5 sm:col-span-3">
+                  <label class="etiqueta" :for="'cu' + i">Costo unitario</label>
+                  <input type="number" min="0" step="50" inputmode="numeric" class="campo" :id="'cu' + i" x-model="fila.costo">
+                </div>
+                <div class="col-span-3 text-right sm:col-span-2">
+                  <button type="button" class="btn btn-claro !px-3" aria-label="Quitar producto" :disabled="fCompra.filas.length === 1" @click="fCompra.filas.splice(i, 1)">✕</button>
+                </div>
+              </div>
+            </template>
+          </div>
+          <button type="button" class="btn btn-claro mt-3" @click="fCompra.filas.push({ productoId: '', cantidad: 10, costo: '' })">+ Agregar producto</button>
+
+          <div class="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 pt-4">
+            <div>
+              <span class="block text-sm text-slate-500">Total de la compra</span>
+              <span class="block text-2xl font-bold tabular-nums text-brand-900" x-text="dinero(totalCompra)"></span>
+            </div>
+            <button type="submit" class="btn btn-primario btn-grande">Registrar compra</button>
+          </div>
+        </form>
+
+        <div class="tarjeta mt-4 overflow-x-auto">
+          <h2 class="font-semibold">Compras registradas</h2>
+          <table class="tabla mt-3" x-show="comprasDeSede.length">
+            <thead><tr><th>N.º</th><th>Hora</th><th>Proveedor</th><th class="text-right">Unidades</th><th class="text-right">Total</th></tr></thead>
+            <tbody>
+              <template x-for="c in comprasDeSede" :key="c.id">
+                <tr>
+                  <td class="whitespace-nowrap font-medium" x-text="c.numero"></td>
+                  <td x-text="hora(c.fecha)"></td>
+                  <td x-text="c.proveedor"></td>
+                  <td class="text-right tabular-nums" x-text="c.items.reduce((n, i) => n + i.cantidad, 0)"></td>
+                  <td class="text-right font-semibold tabular-nums" x-text="dinero(c.total)"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+          <p class="mt-3 text-sm text-slate-500" x-show="!comprasDeSede.length">Aún no hay compras en esta sede.</p>
+        </div>
+      </section>
+
+      <!-- ══ PRODUCTOS ══ -->
+      <section x-show="vista === 'productos'">
+        <h1 class="text-2xl font-bold">Productos</h1>
+        <p class="mt-1 text-sm text-slate-500">Catálogo de la empresa, con el margen de cada producto.</p>
+        <div class="tarjeta mt-4 overflow-x-auto">
+          <table class="tabla">
+            <thead><tr><th>Producto</th><th>Categoría</th><th class="text-right">Precio</th><th class="text-right">Costo</th><th class="text-right">Margen</th></tr></thead>
+            <tbody>
+              <template x-for="p in s.productos" :key="p.id">
+                <tr>
+                  <td class="font-medium text-slate-900" x-text="p.nombre"></td>
+                  <td x-text="p.categoria"></td>
+                  <td class="text-right tabular-nums" x-text="dinero(p.precio)"></td>
+                  <td class="text-right tabular-nums text-slate-500" x-text="dinero(p.costo)"></td>
+                  <td class="text-right font-semibold tabular-nums text-emerald-700" x-text="Math.round((p.precio - p.costo) / p.precio * 100) + ' %'"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Llamada a la acción -->
+      <section class="mt-8 rounded-xl bg-brand-900 p-6 text-center sm:p-8">
+        <h2 class="text-xl font-bold !text-white">¿Te gustaría esto en tu negocio?</h2>
+        <p class="mx-auto mt-2 max-w-xl text-sm text-brand-200">Te mostramos TuControl con tus productos y tus sedes, sin compromiso.</p>
+        <a href="/#contacto" class="btn mt-4 bg-white text-brand-900 hover:bg-brand-100">Solicitar una demo guiada</a>
+      </section>
+    </main>
+  </div>
+
+  <!-- Menú inferior (celular) -->
+  <nav class="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white lg:hidden" aria-label="Secciones">
+    <ul class="flex">
+      <template x-for="v in vistas" :key="v.id">
+        <li class="flex-1">
+          <button type="button" @click="ir(v.id)" class="flex w-full cursor-pointer flex-col items-center gap-0.5 px-1 py-2 text-[11px] font-medium"
+                  :class="vista === v.id ? 'text-brand-900' : 'text-slate-400'">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path :d="v.icono"/></svg>
+            <span x-text="v.nombre"></span>
+          </button>
+        </li>
+      </template>
+    </ul>
+  </nav>
+
+  <!-- Aviso flotante -->
+  <div class="pointer-events-none fixed inset-x-0 bottom-20 z-40 flex justify-center px-4 lg:bottom-6" aria-live="polite">
+    <div class="rounded-lg bg-slate-900 px-4 py-3 text-sm font-medium text-white shadow-lg" x-show="aviso" x-transition x-text="aviso"></div>
+  </div>
+</div>
+</body>
+</html>

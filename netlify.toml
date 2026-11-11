@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# La página de socios no debe aparecer en buscadores.
+[[headers]]
+  for = "/socios-2026/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

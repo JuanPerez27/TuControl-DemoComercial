@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TuControl · Controla tu negocio desde un solo lugar</title>
+  <meta name="description" content="Inventario, ventas, caja y reportes para tu negocio en Colombia. Varias sedes, cuadre de caja y pagos con Nequi y Daviplata. Prueba la demo gratis.">
+  <meta property="og:title" content="TuControl · Controla tu negocio desde un solo lugar">
+  <meta property="og:description" content="Inventario, ventas, caja y reportes para tu negocio. Prueba la demo sin registrarte.">
+  <meta property="og:image" content="/logo-original.webp">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_CO">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script type="module" src="/src/sitio.js"></script>
+</head>
+<body>
+
+<!-- navbar -->
+
+<main>
+  <!-- Encabezado -->
+  <section class="overflow-hidden bg-gradient-to-b from-brand-50 to-white">
+    <div class="contenedor grid items-center gap-10 py-14 sm:py-20 lg:grid-cols-2">
+      <div>
+        <p class="sobretitulo">Sistema para negocios en Colombia</p>
+        <h1 class="mt-3 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">Controla tu negocio desde un solo lugar</h1>
+        <p class="mt-5 max-w-xl text-lg text-slate-600">Inventario, ventas, caja y reportes en una sola herramienta. Sabes qué vendiste, qué te queda y si la caja cuadra, desde el celular o el computador.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/demo/" class="btn btn-primario btn-grande">Probar la demo</a>
+          <a href="#" data-whatsapp class="btn btn-whatsapp btn-grande">Escríbenos por WhatsApp</a>
+        </div>
+        <p class="mt-4 text-sm text-slate-500">La demo abre al instante. No necesitas registrarte.</p>
+      </div>
+
+      <!-- Vista previa del panel -->
+      <a href="/demo/" class="block rounded-2xl border border-slate-200 bg-white p-4 shadow-xl shadow-brand-900/10 transition hover:-translate-y-1 sm:p-5" aria-label="Abrir la demo interactiva">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-semibold text-brand-900">Panel · Café La Esquina</span>
+          <span class="chip chip-ok">En vivo</span>
+        </div>
+        <div class="mt-4 grid grid-cols-3 gap-2 sm:gap-3">
+          <div class="rounded-lg bg-slate-50 p-2 sm:p-3">
+            <p class="text-[11px] text-slate-500">Ventas de hoy</p>
+            <p class="mt-1 whitespace-nowrap text-sm font-bold text-brand-900 sm:text-lg">$ 486.500</p>
+          </div>
+          <div class="rounded-lg bg-slate-50 p-2 sm:p-3">
+            <p class="text-[11px] text-slate-500">Utilidad</p>
+            <p class="mt-1 whitespace-nowrap text-sm font-bold text-emerald-700 sm:text-lg">$ 318.200</p>
+          </div>
+          <div class="rounded-lg bg-slate-50 p-2 sm:p-3">
+            <p class="text-[11px] text-slate-500">Stock bajo</p>
+            <p class="mt-1 text-sm font-bold text-amber-700 sm:text-lg">5</p>
+          </div>
+        </div>
+        <svg class="mt-4 w-full" viewBox="0 0 400 130" fill="none" aria-hidden="true">
+          <path d="M0 100 L30 88 L60 94 L90 70 L120 78 L150 52 L180 60 L210 44 L240 58 L270 36 L300 48 L330 26 L360 34 L400 14 V130 H0 Z" fill="#0ea5e9" fill-opacity=".12"/>
+          <path d="M0 100 L30 88 L60 94 L90 70 L120 78 L150 52 L180 60 L210 44 L240 58 L270 36 L300 48 L330 26 L360 34 L400 14" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="mt-3 flex items-center justify-between rounded-lg bg-brand-900 px-4 py-3 text-sm text-white">
+          <span>Caja Centro · efectivo esperado</span>
+          <strong>$ 254.000</strong>
+        </div>
+        <p class="mt-3 text-center text-sm font-semibold text-acento-600">Toca para abrir la demo interactiva →</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- Problema -->
+  <section class="seccion">
+    <div class="contenedor">
+      <p class="sobretitulo">El problema</p>
+      <h2 class="mt-2 max-w-2xl text-3xl font-bold tracking-tight">Llevar el negocio en cuadernos y Excel sale caro</h2>
+      <div class="mt-10 grid gap-5 md:grid-cols-3">
+        <div class="tarjeta">
+          <h3 class="text-lg font-semibold">La caja no cuadra</h3>
+          <p class="mt-2 text-sm text-slate-600">Al final del día falta plata y nadie sabe en qué momento se perdió.</p>
+        </div>
+        <div class="tarjeta">
+          <h3 class="text-lg font-semibold">No sabes qué hay en bodega</h3>
+          <p class="mt-2 text-sm text-slate-600">Te enteras de que un producto se acabó cuando el cliente ya lo pidió.</p>
+        </div>
+        <div class="tarjeta">
+          <h3 class="text-lg font-semibold">No sabes cuánto ganas</h3>
+          <p class="mt-2 text-sm text-slate-600">Vendes todos los días, pero no tienes claro qué producto deja utilidad y cuál no.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Funciones -->
+  <section id="funciones" class="seccion bg-slate-50">
+    <div class="contenedor">
+      <p class="sobretitulo">Funciones</p>
+      <h2 class="mt-2 max-w-2xl text-3xl font-bold tracking-tight">Todo lo que necesita tu negocio, en una sola herramienta</h2>
+      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="tarjeta">
+          <h3 class="text-lg font-semibold">Inventario por sede</h3>
+          <p class="mt-2 text-sm text-slate-600">Stock en tiempo real, alertas cuando un producto baja del mínimo y registro de cada entrada y salida.</p>
+        </div>
+        <div class="tarjeta">
+          <h3 class="text-lg font-semibold">Ventas rápidas</h3>
+          <p class="mt-2 text-sm text-slate-600">Registra una venta en segundos. El stock se descuenta solo y cada venta queda numerada.</p>
+        </div>
+        <div class="tarjeta">
+          <h3 class="text-lg font-semibold">Caja con cuadre</h3>
+          <p class="mt-2 text-sm text-slate-600">Abre y cierra caja por turno. El sistema te dice cuánto efectivo debería haber y si sobra o falta.</p>
+        </div>
+        <div class="tarjeta">
+          <h3 class="text-lg font-semibold">Compras y proveedores</h3>
+          <p class="mt-2 text-sm text-slate-600">Registra lo que compras y el inventario sube automáticamente en la sede que elijas.</p>
+        </div>
+        <div class="tarjeta">
+          <h3 class="text-lg font-semibold">Reportes de utilidad</h3>
+          <p class="mt-2 text-sm text-slate-600">Ventas por día, productos más vendidos, ingresos por método de pago y utilidad real.</p>
+        </div>
+        <div class="tarjeta">
+          <h3 class="text-lg font-semibold">Roles y varias sedes</h3>
+          <p class="mt-2 text-sm text-slate-600">El administrador ve todo; el cajero solo vende y maneja la caja. Todas tus sedes en una cuenta.</p>
+        </div>
+      </div>
+
+      <div class="mt-8 rounded-xl border border-slate-200 bg-white p-6">
+        <h3 class="text-lg font-semibold">Pensado para como se paga en Colombia</h3>
+        <p class="mt-1 text-sm text-slate-600">Cada venta queda registrada con su método de pago, para que sepas cuánto entró por cada uno.</p>
+        <ul class="mt-4 flex flex-wrap gap-2 text-sm font-semibold text-brand-900">
+          <li class="rounded-full bg-brand-50 px-4 py-2">Efectivo</li>
+          <li class="rounded-full bg-brand-50 px-4 py-2">Nequi</li>
+          <li class="rounded-full bg-brand-50 px-4 py-2">Daviplata</li>
+          <li class="rounded-full bg-brand-50 px-4 py-2">Transferencia</li>
+          <li class="rounded-full bg-brand-50 px-4 py-2">Tarjeta</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cómo funciona -->
+  <section id="como-funciona" class="seccion">
+    <div class="contenedor">
+      <p class="sobretitulo">Cómo funciona</p>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight">Empiezas en tres pasos</h2>
+      <ol class="mt-10 grid gap-6 md:grid-cols-3">
+        <li>
+          <span class="flex h-11 w-11 items-center justify-center rounded-full bg-brand-900 text-lg font-bold text-white">1</span>
+          <h3 class="mt-4 text-lg font-semibold">Registra tus productos</h3>
+          <p class="mt-2 text-sm text-slate-600">Cargas tu catálogo con precio, costo y stock mínimo. Nosotros te acompañamos.</p>
+        </li>
+        <li>
+          <span class="flex h-11 w-11 items-center justify-center rounded-full bg-brand-900 text-lg font-bold text-white">2</span>
+          <h3 class="mt-4 text-lg font-semibold">Vende y maneja la caja</h3>
+          <p class="mt-2 text-sm text-slate-600">Tu equipo abre caja, registra las ventas y cierra con el cuadre al final del turno.</p>
+        </li>
+        <li>
+          <span class="flex h-11 w-11 items-center justify-center rounded-full bg-brand-900 text-lg font-bold text-white">3</span>
+          <h3 class="mt-4 text-lg font-semibold">Revisa tus números</h3>
+          <p class="mt-2 text-sm text-slate-600">Entras al panel y ves ventas, utilidad y lo que hay que reponer, estés donde estés.</p>
+        </li>
+      </ol>
+
+      <div class="mt-12 rounded-xl bg-brand-50 p-6 sm:p-8">
+        <h3 class="text-lg font-semibold">¿Para qué negocios sirve?</h3>
+        <ul class="mt-4 flex flex-wrap gap-2 text-sm text-slate-700">
+          <li class="rounded-full bg-white px-4 py-2 shadow-sm">Tiendas y minimercados</li>
+          <li class="rounded-full bg-white px-4 py-2 shadow-sm">Cafeterías y panaderías</li>
+          <li class="rounded-full bg-white px-4 py-2 shadow-sm">Restaurantes pequeños</li>
+          <li class="rounded-full bg-white px-4 py-2 shadow-sm">Papelerías y misceláneas</li>
+          <li class="rounded-full bg-white px-4 py-2 shadow-sm">Tiendas de ropa y accesorios</li>
+          <li class="rounded-full bg-white px-4 py-2 shadow-sm">Negocios con varias sedes</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Planes -->
+  <section id="planes" class="seccion bg-brand-900">
+    <div class="contenedor text-center">
+      <h2 class="text-3xl font-bold tracking-tight !text-white">Un plan a la medida de tu negocio</h2>
+      <p class="mx-auto mt-4 max-w-2xl text-brand-200">El precio depende de cuántas sedes y usuarios necesites. Cuéntanos cómo es tu negocio y te enviamos una propuesta clara, sin letra pequeña.</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a href="#" data-whatsapp class="btn btn-whatsapp btn-grande">Consultar mi plan por WhatsApp</a>
+        <a href="#contacto" class="btn btn-grande bg-white text-brand-900 hover:bg-brand-100">Solicitar una demo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Preguntas -->
+  <section id="preguntas" class="seccion">
+    <div class="contenedor max-w-3xl">
+      <p class="sobretitulo">Preguntas frecuentes</p>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight">Lo que más nos preguntan</h2>
+      <div class="mt-8 divide-y divide-slate-200 border-y border-slate-200">
+        <details class="group py-4">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold text-brand-900">¿Funciona en el celular?<span class="text-xl text-slate-400 group-open:rotate-45">+</span></summary>
+          <p class="mt-3 text-sm text-slate-600">Sí. TuControl se usa desde el navegador del celular, la tablet o el computador. No hay que instalar nada.</p>
+        </details>
+        <details class="group py-4">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold text-brand-900">¿Necesito internet?<span class="text-xl text-slate-400 group-open:rotate-45">+</span></summary>
+          <p class="mt-3 text-sm text-slate-600">Sí, necesitas conexión para registrar ventas y ver tus reportes. Así tus datos están al día en todas las sedes.</p>
+        </details>
+        <details class="group py-4">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold text-brand-900">¿Puedo manejar varias sedes?<span class="text-xl text-slate-400 group-open:rotate-45">+</span></summary>
+          <p class="mt-3 text-sm text-slate-600">Sí. Cada sede tiene su propio inventario y su propia caja, y tú ves el resumen de todas en un solo panel.</p>
+        </details>
+        <details class="group py-4">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold text-brand-900">¿Mis empleados ven toda la información?<span class="text-xl text-slate-400 group-open:rotate-45">+</span></summary>
+          <p class="mt-3 text-sm text-slate-600">No. El cajero solo puede vender y manejar la caja. Los costos, las compras y los reportes los ve únicamente el administrador.</p>
+        </details>
+        <details class="group py-4">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold text-brand-900">¿Qué pasa si me equivoco en una venta?<span class="text-xl text-slate-400 group-open:rotate-45">+</span></summary>
+          <p class="mt-3 text-sm text-slate-600">El administrador puede anularla. El stock vuelve al inventario, la caja se ajusta y la venta queda marcada como anulada, no se borra.</p>
+        </details>
+        <details class="group py-4">
+          <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold text-brand-900">¿La demo usa mis datos?<span class="text-xl text-slate-400 group-open:rotate-45">+</span></summary>
+          <p class="mt-3 text-sm text-slate-600">No. La demo trabaja con un negocio de ejemplo y todo lo que hagas se queda en tu navegador.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contacto -->
+  <section id="contacto" class="seccion bg-slate-50">
+    <div class="contenedor grid gap-10 lg:grid-cols-2">
+      <div>
+        <p class="sobretitulo">Solicita una demo</p>
+        <h2 class="mt-2 text-3xl font-bold tracking-tight">Te lo mostramos con tu negocio</h2>
+        <p class="mt-4 text-slate-600">Déjanos tus datos y te contactamos para una demostración guiada, con tus productos y tus sedes.</p>
+        <ul class="mt-6 space-y-3 text-sm text-slate-700">
+          <li><a href="#" data-whatsapp class="font-semibold text-emerald-700 hover:underline">WhatsApp</a>: respuesta más rápida.</li>
+          <li>Instagram: <a href="#" data-instagram class="font-semibold text-brand-900 hover:underline">@tucontrol.colombia</a></li>
+        </ul>
+      </div>
+
+      <form name="solicitud-demo" method="POST" action="/gracias/" data-netlify="true" netlify-honeypot="sitio-web" class="tarjeta">
+        <input type="hidden" name="form-name" value="solicitud-demo">
+        <p class="hidden"><label>No llenes este campo: <input name="sitio-web"></label></p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="sm:col-span-2">
+            <label class="etiqueta" for="nombre">Tu nombre</label>
+            <input id="nombre" name="nombre" class="campo" required autocomplete="name">
+          </div>
+          <div>
+            <label class="etiqueta" for="negocio">Nombre del negocio</label>
+            <input id="negocio" name="negocio" class="campo" required autocomplete="organization">
+          </div>
+          <div>
+            <label class="etiqueta" for="ciudad">Ciudad</label>
+            <input id="ciudad" name="ciudad" class="campo" required autocomplete="address-level2">
+          </div>
+          <div>
+            <label class="etiqueta" for="telefono">WhatsApp</label>
+            <input id="telefono" name="telefono" type="tel" inputmode="tel" class="campo" required autocomplete="tel" placeholder="300 000 0000">
+          </div>
+          <div>
+            <label class="etiqueta" for="sedes">¿Cuántas sedes tienes?</label>
+            <select id="sedes" name="sedes" class="campo">
+              <option>1</option><option>2 o 3</option><option>4 o más</option>
+            </select>
+          </div>
+          <div class="sm:col-span-2">
+            <label class="etiqueta" for="mensaje">¿Qué te gustaría controlar mejor? <span class="font-normal text-slate-400">(opcional)</span></label>
+            <textarea id="mensaje" name="mensaje" rows="3" class="campo"></textarea>
+          </div>
+          <label class="flex items-start gap-2 text-sm text-slate-600 sm:col-span-2">
+            <input type="checkbox" name="acepta-datos" required class="mt-0.5 h-4 w-4 rounded border-slate-300">
+            <span>Autorizo el tratamiento de mis datos para ser contactado, según la <a href="/privacidad/" class="font-semibold text-brand-900 underline">política de privacidad</a>.</span>
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primario btn-grande mt-5 w-full">Solicitar demo</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="border-t border-slate-200 bg-white">
+  <div class="contenedor flex flex-col items-center justify-between gap-4 py-8 text-sm text-slate-500 sm:flex-row">
+    <div class="flex items-center gap-2">
+      <img src="/logo.svg" alt="" class="h-8 w-8">
+      <span>© <span data-anio></span> TuControl · Colombia</span>
+    </div>
+    <nav class="flex flex-wrap justify-center gap-5" aria-label="Pie de página">
+      <a class="hover:text-brand-900" href="/demo/">Demo</a>
+      <a class="hover:text-brand-900" href="/privacidad/">Privacidad</a>
+      <a class="hover:text-brand-900" href="#" data-instagram>Instagram</a>
+      <a class="hover:text-brand-900" href="#" data-whatsapp>WhatsApp</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- Botón flotante de WhatsApp -->
+<a href="#" data-whatsapp aria-label="Escríbenos por WhatsApp"
+   class="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg shadow-emerald-900/30 transition hover:scale-105 hover:bg-emerald-700">
+  <svg class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 18.2a8.2 8.2 0 01-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1112 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.700 6.700 0 01-2-1.200 7.500 7.500 0 01-1.400-1.700c-.1-.2 0-.4.1-.5l.4-.4.2-.4a.5.5 0 000-.4c0-.1-.6-1.400-.8-1.900s-.4-.4-.6-.4h-.5a1 1 0 00-.7.3 2.900 2.900 0 00-.9 2.200 5 5 0 001.100 2.700 11.500 11.500 0 004.400 3.900c.6.300 1.100.4 1.500.5a3.600 3.600 0 001.600.1 2.700 2.700 0 001.800-1.200 2.200 2.200 0 00.100-1.200c0-.200-.200-.200-.500-.400z"/></svg>
+</a>
+
+</body>
+</html>
